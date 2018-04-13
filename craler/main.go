@@ -10,6 +10,7 @@ import (
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/transform"
+	"regexp"
 )
 
 func main() {
@@ -36,8 +37,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s\n", all)
+	printCityList(all)
 
+}
+func printCityList(content []byte) {
+	re := regexp.MustCompile(`<a href="(http://www.zhenai.com/zhenghun/[0-9a-z]+)"[^>]*>([^<]+)</a>`)
+	matches := re.FindAllSubmatch(content,-1)
+	for _, v := range matches {
+		fmt.Printf("city :%s --> URL :%s \n",v[2],v[1])
+	}
+	fmt.Printf("number : %d",len(matches))
 }
 
 //获得网页编码
